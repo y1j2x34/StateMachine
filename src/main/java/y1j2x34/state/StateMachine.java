@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * 有限状态机
- * @author 杨建新
+ * @author y1j2x34
  *
  * @param <Action> 状态机事件
  */
