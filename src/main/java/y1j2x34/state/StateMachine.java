@@ -123,7 +123,7 @@ public class StateMachine<Action> implements Serializable,StateListener<Action>{
 	public void onBeforeEvent(StateMachine<Action> machine,State<Action> current) {}
 
 	@Override
-	public void onAfterEvent(StateMachine<Action> machine, State<Action> current) {}
+	public void onAfterEvent(StateMachine<Action> machine, State<Action> current,Object actionReturned) {}
 
 	@Override
 	public void onBeforeState(StateMachine<Action> machine,State<Action> ready, State<Action> current, Object condition) {}

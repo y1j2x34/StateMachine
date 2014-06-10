@@ -126,6 +126,7 @@ public final class ReflectUtils {
 				try {
 					type = uloader.loadClass(cname.toString());
 				} catch (ClassNotFoundException e) {}
+				catch (NoClassDefFoundError e) {}
 				cname.setLength(0);
 			}
 		}

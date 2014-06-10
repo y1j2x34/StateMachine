@@ -26,6 +26,19 @@ public class AppTest
 			fail(e.getMessage());
 		}
     	assertEquals("dance", machine.current().getName());
+    	machine.setStateListener(new StateAdapter<SportAction>() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void onBeforeEvent(StateMachine<SportAction> machine,
+					State<SportAction> current) {
+				assertEquals("dance", current.getName());
+			}
+			@Override
+			public void onAfterEvent(StateMachine<SportAction> machine,
+					State<SportAction> current, Object actionReturned) {
+				assertNull(actionReturned);
+			}
+    	});
     	machine.current().getAction().sport();
     }
 }

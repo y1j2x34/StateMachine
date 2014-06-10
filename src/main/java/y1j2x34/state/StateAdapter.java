@@ -9,7 +9,7 @@ public abstract class StateAdapter<Action> implements StateListener<Action> {
 	}
 
 	@Override
-	public void onAfterEvent(StateMachine<Action> machine, State<Action> current) {
+	public void onAfterEvent(StateMachine<Action> machine, State<Action> current,Object actionReturned) {
 
 	}
 

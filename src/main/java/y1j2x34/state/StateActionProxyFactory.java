@@ -58,7 +58,7 @@ final class StateActionProxyFactory{
 			//事件发生后
 			listener = machine.getStateListener();
 			if(listener != null){
-				listener.onAfterEvent(machine, current);
+				listener.onAfterEvent(machine, current,result);
 			}
 			return result;
 		}

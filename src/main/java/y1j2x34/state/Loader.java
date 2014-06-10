@@ -110,6 +110,7 @@ class Loader<Action> {
 					listener = ReflectUtils.newInstance(ReflectUtils.findClass(imports, class_));
 				}
 				if (listener instanceof StateListener) {
+					importProperty(listener, listenerElement);
 					@SuppressWarnings("unchecked")
 					StateListener<Action> sl = (StateListener<Action>) listener;
 					machine.setStateListener(sl);
@@ -171,7 +172,6 @@ class Loader<Action> {
 			throw new InvalidFormatException("no initial state");
 		}
 	}
-
 	private void importConf(Element confElement,
 			Map<String, State<Action>> nameStates)
 			throws InvalidFormatException {
@@ -179,36 +179,32 @@ class Loader<Action> {
 		String confTo = confElement.getAttribute("to");
 		String confVal = confElement.getAttribute("val");
 		String confCondCls = confElement.getAttribute("condition");
-
+		confCondCls = StrUtil.isEmpty(confCondCls) ? DefaultCondition.class.getName() : confCondCls;
+		
 		NodeList children = confElement.getElementsByTagName("link");
 		int len = children.getLength();
 		if (len > 0) {
 			for (int i = 0; i < len; i++) {
 				Node item = children.item(i);
-				if ("link".equals(item.getNodeName())) {
-					Element condElement = (Element) item;
-					String from = checkLostAttr(condElement, "from", confFrom);
-					String to = checkLostAttr(condElement, "to", confTo);
-					String val = checkLostAttr(condElement, "val", confVal);
-					String condCls = checkLostAttr(
-							confElement,
-							"condition",
-							(StrUtil.isEmpty(confCondCls)) ? DefaultCondition.class
-									.getName() : confCondCls);
-					State<Action> sFrom = nameStates.get(from);
-
-					if (sFrom == null) {
-						throw new RuntimeException("from state not found :"
-								+ from);
-					}
-					State<Action> sTo = nameStates.get(to);
-					if (sTo == null) {
-						throw new RuntimeException("to state not found :" + to);
-					}
-					StateCondition condition = newConditionInstance(condCls, val);
-					importProperty(condition, condElement);
-					sFrom.link(condition, sTo);
+				Element linkElement = (Element) item;
+				String from = checkLostAttr(linkElement, "from", confFrom);
+				String to = checkLostAttr(linkElement, "to", confTo);
+				String val = checkLostAttr(linkElement, "val", confVal);
+				String condCls = checkLostAttr(linkElement,"condition",confCondCls);
+				
+				State<Action> sFrom = nameStates.get(from);
+				
+				if (sFrom == null) {
+					throw new RuntimeException("from state not found :"
+							+ from);
 				}
+				State<Action> sTo = nameStates.get(to);
+				if (sTo == null) {
+					throw new RuntimeException("to state not found :" + to);
+				}
+				StateCondition condition = newConditionInstance(condCls, val);
+				importProperty(condition, linkElement);
+				sFrom.link(condition, sTo);
 			}
 		}
 	}

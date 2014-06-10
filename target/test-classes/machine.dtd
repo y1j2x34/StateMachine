@@ -11,7 +11,7 @@
 <!ELEMENT conf (link+)>
 <!ELEMENT link (property*)>
 <!ELEMENT cur (#PCDATA)>
-<!ELEMENT listener (#PCDATA)>
+<!ELEMENT listener (property*)>
 <!ELEMENT import (#PCDATA)>
 <!ELEMENT property (#PCDATA)>
 <!ELEMENT action (property*)>

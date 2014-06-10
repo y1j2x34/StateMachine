@@ -19,8 +19,9 @@ public interface StateListener<Action> extends Serializable{
 	 * 任一事件结束之后调用
 	 * @param machine 状态机
 	 * @param current 事件所属状态
+	 * @param actionReturned 事件返回值
 	 */
-	void onAfterEvent(StateMachine<Action> machine,State<Action> current);
+	void onAfterEvent(StateMachine<Action> machine,State<Action> current,Object actionReturned);
 	/**
 	 * 进入任一状态时触发
 	 * @param machine	状态机
