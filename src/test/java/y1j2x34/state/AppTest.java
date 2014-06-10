@@ -19,7 +19,7 @@ public class AppTest
     	map.put("danceName", "芭蕾舞");
     	StateMachine<SportAction> machine = new StateMachine<SportAction>();
     	try {
-			machine.loadFromXml(getClass().getClassLoader().getResourceAsStream("machine0.xml"),map);
+			machine.loadFromXml(getClass().getClassLoader().getResourceAsStream("machine.xml"),map);
 		} catch (InvalidFormatException e) {
 			fail(e.getMessage());
 		} catch (IOException e) {
