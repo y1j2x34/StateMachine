@@ -7,11 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * <pre>
- * 被标记的方法
- * 或
- * 标记到类和接口时设定的name数组里的方法
- * 的调用会触发状态机事件
- * 这里的事件为：
+ * 用于标记能够被代理的事件方法或类，
  * 触发前事件：{@linkplain StateListener#onBeforeEvent(StateMachine, State)} 
  * 触发后事件：{@linkplain StateListener#onAfterEvent(StateMachine, State)}
  * </pre>

@@ -8,7 +8,7 @@ public class RegexCondition extends DefaultCondition{
 	}
 	
 	@Override
-	public boolean is(Object o) {
+	public boolean test(Object o) {
 		if(o == null) return false;
 		String regex = String.valueOf(getValue());
 		String other = String.valueOf(o);

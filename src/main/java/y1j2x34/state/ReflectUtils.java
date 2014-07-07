@@ -3,8 +3,6 @@ package y1j2x34.state;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -108,14 +106,13 @@ public final class ReflectUtils {
 				return ft;
 			}
 		}
-		URLClassLoader uloader = new URLClassLoader(new URL[]{});
 		Class<?> type = null;
 		if(!( imports == null || imports.isEmpty())){
 			StringBuilder cname = new StringBuilder();
 			Iterator<String> it = imports.iterator();
 			while(type == null && it.hasNext()){
 				String imp=it.next();
-				if(imp.endsWith("*")){
+				if(imp.charAt(imp.length()-1) == '*'){
 					cname.append(imp.substring(0, imp.length()-1)).append(simpleName);
 				}else if(imp.endsWith(simpleName)){
 					cname.setLength(0);
@@ -124,17 +121,13 @@ public final class ReflectUtils {
 					cname.append(imp).append('.').append(simpleName);
 				}
 				try {
-					type = uloader.loadClass(cname.toString());
+					type = Class.forName(cname.toString());
 				} catch (ClassNotFoundException e) {}
 				catch (NoClassDefFoundError e) {}
 				cname.setLength(0);
 			}
 		}
-		if(type == null){
-			try {
-				type = uloader.loadClass(simpleName);
-			} catch (ClassNotFoundException e) {}
-		}
+		
 		if(type == null){
 			try {
 				type = Class.forName(simpleName);

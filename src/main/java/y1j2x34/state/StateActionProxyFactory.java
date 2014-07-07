@@ -18,10 +18,7 @@ final class StateActionProxyFactory{
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args)
 				throws Throwable {
-			ActionMethod method_ann = null;
-			try{
-				method_ann = method.getAnnotation(ActionMethod.class);
-			}catch(NullPointerException e){}
+			ActionMethod method_ann = method.getAnnotation(ActionMethod.class);
 			boolean ct = true;
 			check:if(method_ann == null){
 				try{

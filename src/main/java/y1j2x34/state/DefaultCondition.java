@@ -9,7 +9,7 @@ public class DefaultCondition implements StateCondition{
 		this.value = value;
 	}
 	
-	public boolean is(Object o){
+	public boolean test(Object o){
 		return o==value || (value != null && value.equals(o));
 	}
 	

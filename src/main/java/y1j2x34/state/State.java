@@ -59,7 +59,7 @@ public class State<Action> implements Serializable{
 	}
 	private State<Action> findNext(Object condition){
 		for(LinkData link:links){
-			if(link.cond.is(condition)){
+			if(link.cond.test(condition)){
 				return link.state;
 			}
 		}

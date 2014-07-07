@@ -1,17 +1,24 @@
 package y1j2x34.state;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
 
 import y1j2x34.state.action.SportAction;
+import y1j2x34.state.script.MatcheScriptParser;
 import static org.junit.Assert.*;
 
-public class AppTest
-{
-	@Test()
+public class AppTest{
+	
+	@Test
+	public void testScriptParser(){
+		MatcheScriptParser.parse("'' not is ''",null);
+	}
+//	@Test()
     public void testApp()
     {
     	Map<String,Object> map = new HashMap<String,Object>();
