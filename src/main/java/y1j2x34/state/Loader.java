@@ -25,6 +25,27 @@ class Loader<Action> {
 	private StateMachine<Action> machine;
 	private List<String> imports = new LinkedList<String>();
 	private Map<String,Object> context ;
+	private static final String ELM_NAME_MACHINE = "machine";
+	private static final String ELM_NAME_IMPORT = "import";
+	private static final String ELM_NAME_INIT = "init";
+	private static final String ELM_NAME_DEF = "def";
+	private static final String ELM_NAME_LISTENER = "listener";
+	private static final String ELM_NAME_CUR = "cur";
+	private static final String ELM_NAME_STATE = "state";
+	private static final String ELM_NAME_LINK = "link";
+	private static final String ELM_NAME_CONF = "conf";
+	private static final String ELM_NAME_ACTION = "action";
+	private static final String ELM_NAME_PROPERTY = "property";
+	private static final String ATTR_NAME_FROM = "from";
+	private static final String ATTR_NAME_TO = "to";
+	private static final String ATTR_NAME_VAL = "val";
+	private static final String ATTR_NAME_NAME = "name";
+	private static final String ATTR_NAME_CLASS = "class";
+	private static final String ATTR_NAME_GUARDS = "guards";
+	private static final String ATTR_NAME_REF = "ref";
+	private static final String ATTR_NAME_ACTION = "action";
+	private static final String ATTR_NAME_VALUE = "value";
+	
 	public Loader(StateMachine<Action> machine,Map<String,Object> context) {
 		this.machine = machine;
 		this.context = context;
@@ -37,7 +58,7 @@ class Loader<Action> {
 		} catch (SAXException e) {
 			throw new InvalidFormatException(e);
 		}
-		Element machineElement = (Element) doc.getElementsByTagName("machine")
+		Element machineElement = (Element) doc.getElementsByTagName(ELM_NAME_MACHINE)
 				.item(0);
 		importStateMachine(machineElement);
 	}
@@ -46,15 +67,15 @@ class Loader<Action> {
 			throws InvalidFormatException {
 
 		Map<String, State<Action>> nameStates = new HashMap<String, State<Action>>();
-		NodeList importElements = machineElement.getElementsByTagName("import");
+		NodeList importElements = machineElement.getElementsByTagName(ELM_NAME_IMPORT);
 		Element initElement = (Element) machineElement.getElementsByTagName(
-				"init").item(0);
+				ELM_NAME_INIT).item(0);
 		Element defElement = (Element) machineElement.getElementsByTagName(
-				"def").item(0);
+				ELM_NAME_DEF).item(0);
 		Element curElement = (Element) machineElement.getElementsByTagName(
-				"cur").item(0);
+				ELM_NAME_CUR).item(0);
 		Element listenerElement = (Element) machineElement
-				.getElementsByTagName("listener").item(0);
+				.getElementsByTagName(ELM_NAME_LISTENER).item(0);
 		
 		//处理包的导入
 		if(importElements.getLength() > 0){
@@ -72,7 +93,7 @@ class Loader<Action> {
 
 		// 导入状态定义
 		if (defElement != null) {
-			NodeList stateElements = defElement.getElementsByTagName("state");
+			NodeList stateElements = defElement.getElementsByTagName(ELM_NAME_STATE);
 			int stateCount = stateElements.getLength();
 			if (stateCount > 0) {
 				for (int i = 0; i < stateCount; i++) {
@@ -83,7 +104,7 @@ class Loader<Action> {
 			}
 		}
 		// 导入状态关系定义
-		NodeList confElements = machineElement.getElementsByTagName("conf");
+		NodeList confElements = machineElement.getElementsByTagName(ELM_NAME_CONF);
 		importConfs(confElements, nameStates);
 		if (curElement != null) {
 			Node fchild = curElement.getFirstChild();
@@ -100,8 +121,8 @@ class Loader<Action> {
 			}
 		}
 		if (listenerElement != null) {
-			if (listenerElement.hasAttribute("class")) {
-				String class_ = listenerElement.getAttribute("class");
+			if (listenerElement.hasAttribute(ATTR_NAME_CLASS)) {
+				String class_ = listenerElement.getAttribute(ATTR_NAME_CLASS);
 				Object listener = null;
 				if(imports.isEmpty()){
 					
@@ -141,7 +162,7 @@ class Loader<Action> {
 				if (len > 0) {
 					for (int i = 0; i < len; i++) {
 						Node item = children.item(i);
-						if ("state".equals(item.getNodeValue())) {
+						if (ELM_NAME_STATE.equals(item.getNodeValue())) {
 							State<Action> state = importState((Element) item,
 									nameStates);
 							nameStates.put(state.getName(), state);
@@ -155,7 +176,7 @@ class Loader<Action> {
 
 	private State<Action> importInitState(Element initElement) throws InvalidFormatException {
 		if (initElement != null) {
-			NodeList states = initElement.getElementsByTagName("state");
+			NodeList states = initElement.getElementsByTagName(ELM_NAME_STATE);
 			switch (states.getLength()) {
 			case 0:
 				throw new InvalidFormatException("not initial state");
@@ -163,7 +184,7 @@ class Loader<Action> {
 				Element stateElement = (Element) states.item(0);
 				Action action = importAction(stateElement);
 				State<Action> state = machine.newState(action,
-						stateElement.hasAttribute("name")?stateElement.getAttribute("name"):"initialize");
+						stateElement.hasAttribute(ATTR_NAME_NAME)?stateElement.getAttribute(ATTR_NAME_NAME):"initialize");
 				return state;
 			default:
 				throw new InvalidFormatException("too much initial state");
@@ -175,22 +196,22 @@ class Loader<Action> {
 	private void importConf(Element confElement,
 			Map<String, State<Action>> nameStates)
 			throws InvalidFormatException {
-		String confFrom = confElement.getAttribute("from");
-		String confTo = confElement.getAttribute("to");
-		String confVal = confElement.getAttribute("val");
-		String confCondCls = confElement.getAttribute("condition");
-		confCondCls = StrUtil.isEmpty(confCondCls) ? DefaultCondition.class.getName() : confCondCls;
+		String confFrom = confElement.getAttribute(ATTR_NAME_FROM);
+		String confTo = confElement.getAttribute(ATTR_NAME_TO);
+		String confVal = confElement.getAttribute(ATTR_NAME_VAL);
+		String confCondCls = confElement.getAttribute(ATTR_NAME_GUARDS);
+		confCondCls = StrUtil.isEmpty(confCondCls) ? DefaultGuards.class.getName() : confCondCls;
 		
-		NodeList children = confElement.getElementsByTagName("link");
+		NodeList children = confElement.getElementsByTagName(ELM_NAME_LINK);
 		int len = children.getLength();
 		if (len > 0) {
 			for (int i = 0; i < len; i++) {
 				Node item = children.item(i);
 				Element linkElement = (Element) item;
-				String from = checkLostAttr(linkElement, "from", confFrom);
-				String to = checkLostAttr(linkElement, "to", confTo);
-				String val = checkLostAttr(linkElement, "val", confVal);
-				String condCls = checkLostAttr(linkElement,"condition",confCondCls);
+				String from = checkLostAttr(linkElement, ATTR_NAME_FROM, confFrom);
+				String to = checkLostAttr(linkElement, ATTR_NAME_TO, confTo);
+				String val = checkLostAttr(linkElement, ATTR_NAME_VAL, confVal);
+				String condCls = checkLostAttr(linkElement,ATTR_NAME_GUARDS,confCondCls);
 				
 				State<Action> sFrom = nameStates.get(from);
 				
@@ -202,7 +223,7 @@ class Loader<Action> {
 				if (sTo == null) {
 					throw new RuntimeException("to state not found :" + to);
 				}
-				StateCondition condition = newConditionInstance(condCls, val);
+				Guards condition = newConditionInstance(condCls, val);
 				importProperty(condition, linkElement);
 				sFrom.link(condition, sTo);
 			}
@@ -212,24 +233,24 @@ class Loader<Action> {
 	private void importStateLink(State<Action> pState, Element stateElement,
 			Map<String, State<Action>> nameStates)
 			throws InvalidFormatException {
-		NodeList children = stateElement.getElementsByTagName("link");
+		NodeList children = stateElement.getElementsByTagName(ELM_NAME_LINK);
 		int len = children.getLength();
 		if (len > 0) {
 			for (int i = 0; i < len; i++) {
 				Node item = children.item(i);
-//				if ("link".equals(item.getNodeName())) {
+//				if (ELM_NAME_LINK.equals(item.getNodeName())) {
 					Element condElement = (Element) item;
-					checkLostAttr(condElement, "val", null);
+					checkLostAttr(condElement, ATTR_NAME_VAL, null);
 					String conditionClass = checkLostAttr(condElement,
-							"condition", DefaultCondition.class.getName());
-					String to = condElement.getAttribute("to");
-					String val = condElement.getAttribute("val");
+							ATTR_NAME_GUARDS, DefaultGuards.class.getName());
+					String to = condElement.getAttribute(ATTR_NAME_TO);
+					String val = condElement.getAttribute(ATTR_NAME_VAL);
 
 					State<Action> sTo = nameStates.get(to);
 					if (sTo == null) {
 						throw new RuntimeException("to state not found!");
 					}
-					StateCondition cond = newConditionInstance(conditionClass, val);
+					Guards cond = newConditionInstance(conditionClass, val);
 					importProperty(cond, (Element)item);
 					pState.link(cond, sTo);
 //				}
@@ -237,13 +258,13 @@ class Loader<Action> {
 		}
 	}
 	private void importProperty(Object target,Element owner){
-		NodeList propsElement = owner.getElementsByTagName("property");
+		NodeList propsElement = owner.getElementsByTagName(ELM_NAME_PROPERTY);
 		int len = propsElement.getLength();
 		for(int i=0;i<len;i++){
 			Element propElement = (Element)propsElement.item(i);
-			String name = propElement.getAttribute("name");
-			Object value = propElement.getAttribute("value");
-			String ref = propElement.getAttribute("ref");
+			String name = propElement.getAttribute(ATTR_NAME_NAME);
+			Object value = propElement.getAttribute(ATTR_NAME_VALUE);
+			String ref = propElement.getAttribute(ATTR_NAME_REF);
 			if(StrUtil.isEmpty(name)){
 				continue;
 			}
@@ -253,7 +274,7 @@ class Loader<Action> {
 				value = context.get(name);
 			}
 			if(!ReflectUtils.set(target, name, value)){
-				System.out.printf(">>canot set property! name:%s value:%s\n",name,String.valueOf(value));
+				System.out.printf(">>参数设置失败！ 参数名称:'%s'，参数值:%s\n",name,String.valueOf(value));
 			}
 		}
 	}
@@ -261,11 +282,11 @@ class Loader<Action> {
 			Map<String, State<Action>> nameStates)
 			throws InvalidFormatException {
 
-		if (!stateElement.hasAttribute("name")) {
+		if (!stateElement.hasAttribute(ATTR_NAME_NAME)) {
 			throw new InvalidFormatException("state name not defined!");
 		}
 
-		String name = stateElement.getAttribute("name");
+		String name = stateElement.getAttribute(ATTR_NAME_NAME);
 
 		if (nameStates.containsKey(name)) {
 			throw new InvalidFormatException("duplicate state name:" + name);
@@ -280,13 +301,13 @@ class Loader<Action> {
 	private Action importAction(Element stateElement){
 		String actionClass = null;
 		Action action = null;
-		NodeList actionChildren = stateElement.getElementsByTagName("action");
+		NodeList actionChildren = stateElement.getElementsByTagName(ELM_NAME_ACTION);
 		Element actionElement = null;
 		if(actionChildren.getLength() == 1){
 			actionElement = (Element) actionChildren.item(0);
-			actionClass = actionElement.getAttribute("class");
+			actionClass = actionElement.getAttribute(ATTR_NAME_CLASS);
 		}else{
-			actionClass = stateElement.getAttribute("action");
+			actionClass = stateElement.getAttribute(ATTR_NAME_ACTION);
 		}
 		try {
 			@SuppressWarnings("unchecked")
@@ -331,11 +352,11 @@ class Loader<Action> {
 		return tag.getAttribute(attrName);
 	}
 
-	private StateCondition newConditionInstance(String cls, String val) {
-		StateCondition conditionObj = null;
+	private Guards newConditionInstance(String cls, String val) {
+		Guards conditionObj = null;
 		try {
 			@SuppressWarnings("unchecked")
-			Class<? extends StateCondition> condCls = (Class<? extends StateCondition>) ReflectUtils
+			Class<? extends Guards> condCls = (Class<? extends Guards>) ReflectUtils
 					.findClass(imports, cls);
 			conditionObj = ReflectUtils.newInstance(condCls,
 					new Class[] { Object.class }, new Object[] { val });

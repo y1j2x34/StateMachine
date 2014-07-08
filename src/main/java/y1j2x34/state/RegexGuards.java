@@ -1,9 +1,9 @@
 package y1j2x34.state;
 
-public class RegexCondition extends DefaultCondition{
+public class RegexGuards extends DefaultGuards{
 
 	private static final long serialVersionUID = 1L;
-	public RegexCondition(Object value) {
+	public RegexGuards(Object value) {
 		super(value);
 	}
 	

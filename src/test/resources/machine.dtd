@@ -1,7 +1,7 @@
 <!ENTITY % link_attrs 
 	"from CDATA #IMPLIED
 	 to CDATA #IMPLIED
-	 condition CDATA #IMPLIED
+	 guards CDATA #IMPLIED
 	 val CDATA #IMPLIED">
 
 <!ELEMENT machine (import*,init,def,conf+,((cur?,listener?)|(listener?,cur?)))>

@@ -65,8 +65,8 @@ public class Storer<Action> {
 			Element linkElm = doc.createElement("link");
 			linkElm.setAttribute("from", link.from);
 			linkElm.setAttribute("to", link.to);
-			linkElm.setAttribute("val", String.valueOf(link.condition.getValue()));
-			linkElm.setAttribute("condition", link.condition.getClass().getName());
+			linkElm.setAttribute("val", String.valueOf(link.guards.getValue()));
+			linkElm.setAttribute("guards", link.guards.getClass().getName());
 			confElm.appendChild(linkElm);
 		}
 		
@@ -144,7 +144,7 @@ public class Storer<Action> {
 		List<State<Action>.LinkData> linkDatas = state.getLinks();
 		for(State<Action>.LinkData linkData:linkDatas){
 			State<Action> stateI = linkData.getState();
-			Link link = new Link(state.getName(),stateI.getName(),linkData.getCondition());
+			Link link = new Link(state.getName(),stateI.getName(),linkData.getGuard());
 			Boolean li = linkTags.get(link);
 			if(li != null && li){
 				continue;
@@ -166,18 +166,18 @@ public class Storer<Action> {
 	private static final class Link{
 		private String from;
 		private String to;
-		private StateCondition condition;
-		public Link(String from,String to, StateCondition condition) {
+		private Guards guards;
+		public Link(String from,String to, Guards guards) {
 			this.from = from;
 			this.to = to;
-			this.condition = condition;
+			this.guards = guards;
 		}
 		@Override
 		public int hashCode() {
 			int result = 17;
 			result += 31*result + (from == null?0:from.hashCode());
 			result += 31*result + (to == null?0:to.hashCode());
-			result += 31*result + (condition == null?0:condition.hashCode());
+			result += 31*result + (guards == null?0:guards.hashCode());
 			return result;
 		}
 		@Override
@@ -185,7 +185,7 @@ public class Storer<Action> {
 			if(obj == this) return true;
 			if(!(obj instanceof Link))return false;
 			Link other = (Link)obj;
-			return eq(from,other.from) && eq(to,other.to) && eq(condition,other.condition);
+			return eq(from,other.from) && eq(to,other.to) && eq(guards,other.guards);
 		}
 		private boolean eq(Object a,Object b){
 			return a != null && a.equals(b);

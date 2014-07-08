@@ -38,38 +38,38 @@ public class StateMachine<Action> implements Serializable,StateListener<Action>{
 	/**
 	 * 构建状态变化事件
 	 * @param from		开始状态
-	 * @param condition	use {@link DefaultCondition} 变化条件
+	 * @param guard	use {@link DefaultGuards} 变化条件
 	 * @param to		目标状态
 	 */
-	public StateMachine<Action> link(State<Action> from,Object condition,State<Action> to){
-		from.link(condition, to);
+	public StateMachine<Action> link(State<Action> from,Object guard,State<Action> to){
+		from.link(guard, to);
 		return this;
 	}
-	public StateMachine<Action> link(State<Action> from,StateCondition condition,State<Action> to){
-		from.link(condition, to);
+	public StateMachine<Action> link(State<Action> from,Guards guard,State<Action> to){
+		from.link(guard, to);
 		return this;
 	}
 	
 	/**
 	 * 根据条件变化状态
-	 * @param condition 条件
+	 * @param guard 条件值
 	 * @throws StateException 狀態不能變化時拋出該異常
 	 * @return 新的状态
 	 */
-	public State<Action> change(Object condition) throws StateException{
+	public State<Action> transition(Object guard) throws StateException{
 		State<Action> old = mCurrent;
-		State<Action> new_ = mCurrent.change(condition);
+		State<Action> new_ = mCurrent.transition(guard);
 		if(new_ != null){
 			mCurrent = new_;
 			mPreview = old;
 			//状态发生了变化，触发变化后的事件
 			if(mListener != null){
-				mListener.onAfterState(this, mCurrent, old, condition);
+				mListener.onAfterState(this, mCurrent, old, guard);
 			}
 		}else{
 			//状态无法改变
-			mListener.onErrorChange(this, old, condition);
-			throw new StateException("can't change state by condition:"+condition);
+			mListener.onErrorChange(this, old, guard);
+			throw new StateException("can't change state by condition:"+guard);
 		}
 		return mCurrent;
 	}

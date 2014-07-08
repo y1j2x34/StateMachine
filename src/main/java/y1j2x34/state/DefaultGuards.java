@@ -1,11 +1,11 @@
 package y1j2x34.state;
 
-public class DefaultCondition implements StateCondition{
+public class DefaultGuards implements Guards{
 	
 	private static final long serialVersionUID = 1L;
 	
 	private Object value;
-	public DefaultCondition(Object value){
+	public DefaultGuards(Object value){
 		this.value = value;
 	}
 	

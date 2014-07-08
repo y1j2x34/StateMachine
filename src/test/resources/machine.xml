@@ -15,7 +15,7 @@
 			</action>
 		</state>
 	</def>
-	<conf val=".*" condition="RegexCondition" from="walk">
+	<conf val=".*" guards="RegexGuards" from="walk">
 		<link to="run" val="\d+"/>
 		<link to="jump" />
 		<link to="dance" >

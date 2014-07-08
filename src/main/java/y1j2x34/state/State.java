@@ -30,36 +30,36 @@ public class State<Action> implements Serializable{
 	}
 	/**
 	 * 与其他状态建立单向条件连接
-	 * @param condition
+	 * @param guard
 	 * @param state
 	 * @return self
 	 */
-	public State<Action> link(Object condition,State<Action> state){
-		return this.link(new DefaultCondition(condition), state);
+	public State<Action> link(Object guard,State<Action> state){
+		return this.link(new DefaultGuards(guard), state);
 	}
-	public State<Action> link(StateCondition condition,State<Action> state){
-		links.add(new LinkData(condition, state));
+	public State<Action> link(Guards guard,State<Action> state){
+		links.add(new LinkData(guard, state));
 		return this;
 	}
 	/**
 	 * 与自身建立条件连接
-	 * @param condition
+	 * @param guard
 	 * @return this
 	 */
-	public final State<Action> round(Object condition){
-		return link(condition,this);
+	public final State<Action> round(Object guard){
+		return link(guard,this);
 	}
-	final State<Action> change(Object condition){
+	final State<Action> transition(Object guard){
 		StateListener<Action> listener = mMachine.getStateListener();
-		State<Action> st = findNext(condition);
+		State<Action> st = findNext(guard);
 		if(st != null && listener != null){
-			listener.onBeforeState(mMachine, st, this, condition);
+			listener.onBeforeState(mMachine, st, this, guard);
 		}
 		return st;
 	}
-	private State<Action> findNext(Object condition){
+	private State<Action> findNext(Object guard){
 		for(LinkData link:links){
-			if(link.cond.test(condition)){
+			if(link.cond.test(guard)){
 				return link.state;
 			}
 		}
@@ -101,16 +101,16 @@ public class State<Action> implements Serializable{
 //		return mMgr;
 //	}
 	class LinkData{
-		private StateCondition cond;
+		private Guards cond;
 		private State<Action> state;
-		public LinkData(StateCondition cond,State<Action> state) {
+		public LinkData(Guards cond,State<Action> state) {
 			this.cond = cond;
 			this.state = state;
 		}
 		public State<Action> getState() {
 			return state;
 		}
-		public StateCondition getCondition() {
+		public Guards getGuard() {
 			return cond;
 		}
 	}

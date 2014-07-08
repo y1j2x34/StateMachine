@@ -16,9 +16,9 @@ public class AppTest{
 	
 	@Test
 	public void testScriptParser(){
-		MatcheScriptParser.parse("'' not is ''",null);
+		MatcheScriptParser.parse("'hello w {}' is not {asds}",null);
 	}
-//	@Test()
+	@Test()
     public void testApp()
     {
     	Map<String,Object> map = new HashMap<String,Object>();

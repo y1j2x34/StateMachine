@@ -3,7 +3,7 @@ package y1j2x34.state;
 import y1j2x34.state.script.Context;
 import y1j2x34.state.script.MatcheScriptParser;
 
-public class ScriptCondition extends DefaultCondition{
+public class ScriptGuards extends DefaultGuards{
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -14,7 +14,7 @@ public class ScriptCondition extends DefaultCondition{
 	 * </pre>
 	 * @param script
 	 */
-	public ScriptCondition(String script,Context context) {
+	public ScriptGuards(String script,Context context) {
 		super(script);
 		this.contetxt = context;
 	}
