@@ -1,6 +1,7 @@
 package y1j2x34.state;
 
 import y1j2x34.state.script.Context;
+import y1j2x34.state.script.MatcheScriptParser;
 
 public class ScriptCondition extends DefaultCondition{
 	private static final long serialVersionUID = 1L;
@@ -23,8 +24,7 @@ public class ScriptCondition extends DefaultCondition{
 		Context ctx = new Context();
 		ctx.putAll(o);
 		ctx.putAll(contetxt);
-		
-		return super.test(o);
+		return MatcheScriptParser.parse(String.valueOf(getValue()), ctx);
 	}
 	private Context contetxt = new Context();
 	
