@@ -166,8 +166,8 @@ public class Storer<Action> {
 	private static final class Link{
 		private String from;
 		private String to;
-		private Guards guards;
-		public Link(String from,String to, Guards guards) {
+		private TransitionCondition guards;
+		public Link(String from,String to, TransitionCondition guards) {
 			this.from = from;
 			this.to = to;
 			this.guards = guards;

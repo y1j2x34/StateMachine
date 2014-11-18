@@ -200,7 +200,7 @@ class Loader<Action> {
 		String confTo = confElement.getAttribute(ATTR_NAME_TO);
 		String confVal = confElement.getAttribute(ATTR_NAME_VAL);
 		String confCondCls = confElement.getAttribute(ATTR_NAME_GUARDS);
-		confCondCls = StrUtil.isEmpty(confCondCls) ? DefaultGuards.class.getName() : confCondCls;
+		confCondCls = StrUtil.isEmpty(confCondCls) ? DefaultTransitionCondition.class.getName() : confCondCls;
 		
 		NodeList children = confElement.getElementsByTagName(ELM_NAME_LINK);
 		int len = children.getLength();
@@ -223,7 +223,7 @@ class Loader<Action> {
 				if (sTo == null) {
 					throw new RuntimeException("to state not found :" + to);
 				}
-				Guards condition = newConditionInstance(condCls, val);
+				TransitionCondition condition = newConditionInstance(condCls, val);
 				importProperty(condition, linkElement);
 				sFrom.link(condition, sTo);
 			}
@@ -242,7 +242,7 @@ class Loader<Action> {
 					Element condElement = (Element) item;
 					checkLostAttr(condElement, ATTR_NAME_VAL, null);
 					String conditionClass = checkLostAttr(condElement,
-							ATTR_NAME_GUARDS, DefaultGuards.class.getName());
+							ATTR_NAME_GUARDS, DefaultTransitionCondition.class.getName());
 					String to = condElement.getAttribute(ATTR_NAME_TO);
 					String val = condElement.getAttribute(ATTR_NAME_VAL);
 
@@ -250,7 +250,7 @@ class Loader<Action> {
 					if (sTo == null) {
 						throw new RuntimeException("to state not found!");
 					}
-					Guards cond = newConditionInstance(conditionClass, val);
+					TransitionCondition cond = newConditionInstance(conditionClass, val);
 					importProperty(cond, (Element)item);
 					pState.link(cond, sTo);
 //				}
@@ -352,11 +352,11 @@ class Loader<Action> {
 		return tag.getAttribute(attrName);
 	}
 
-	private Guards newConditionInstance(String cls, String val) {
-		Guards conditionObj = null;
+	private TransitionCondition newConditionInstance(String cls, String val) {
+		TransitionCondition conditionObj = null;
 		try {
 			@SuppressWarnings("unchecked")
-			Class<? extends Guards> condCls = (Class<? extends Guards>) ReflectUtils
+			Class<? extends TransitionCondition> condCls = (Class<? extends TransitionCondition>) ReflectUtils
 					.findClass(imports, cls);
 			conditionObj = ReflectUtils.newInstance(condCls,
 					new Class[] { Object.class }, new Object[] { val });

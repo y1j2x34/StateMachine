@@ -35,9 +35,9 @@ public class State<Action> implements Serializable{
 	 * @return self
 	 */
 	public State<Action> link(Object guard,State<Action> state){
-		return this.link(new DefaultGuards(guard), state);
+		return this.link(new DefaultTransitionCondition(guard), state);
 	}
-	public State<Action> link(Guards guard,State<Action> state){
+	public State<Action> link(TransitionCondition guard,State<Action> state){
 		links.add(new LinkData(guard, state));
 		return this;
 	}
@@ -59,7 +59,7 @@ public class State<Action> implements Serializable{
 	}
 	private State<Action> findNext(Object guard){
 		for(LinkData link:links){
-			if(link.cond.test(guard)){
+			if(link.cond.accept(guard)){
 				return link.state;
 			}
 		}
@@ -101,16 +101,16 @@ public class State<Action> implements Serializable{
 //		return mMgr;
 //	}
 	class LinkData{
-		private Guards cond;
+		private TransitionCondition cond;
 		private State<Action> state;
-		public LinkData(Guards cond,State<Action> state) {
+		public LinkData(TransitionCondition cond,State<Action> state) {
 			this.cond = cond;
 			this.state = state;
 		}
 		public State<Action> getState() {
 			return state;
 		}
-		public Guards getGuard() {
+		public TransitionCondition getGuard() {
 			return cond;
 		}
 	}

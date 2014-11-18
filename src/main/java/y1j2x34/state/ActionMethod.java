@@ -1,6 +1,8 @@
 package y1j2x34.state;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -13,8 +15,10 @@ import java.lang.annotation.Target;
  * </pre>
  * @author y1j2x34
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.METHOD,ElementType.TYPE})
+@Inherited
 public @interface ActionMethod {
 	String[] name() default {};
 }

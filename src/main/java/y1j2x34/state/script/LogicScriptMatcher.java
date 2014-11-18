@@ -7,5 +7,6 @@ public interface LogicScriptMatcher extends ScriptMatcher{
 	ValueScriptMatcher or(Object value);
 	ValueScriptMatcher andThat();
 	ValueScriptMatcher orThat();
+	LogicScriptMatcher not();
 	boolean reduce();
 }

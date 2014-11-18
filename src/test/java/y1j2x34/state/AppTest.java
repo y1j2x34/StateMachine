@@ -6,19 +6,28 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import y1j2x34.state.action.SportAction;
-import y1j2x34.state.script.MatcheScriptParser;
+import y1j2x34.state.script.Context;
+import y1j2x34.state.script.Script;
 import static org.junit.Assert.*;
 
 public class AppTest{
 	
 	@Test
-	public void testScriptParser(){
-		MatcheScriptParser.parse("'hello w {}' is not {asds}",null);
+	public void testScript(){
+		Script script = Script.compile("{I} am {smart}");
+		System.out.println(script.getUnits());
+		Context context = new Context();
+		context.put("I", 1);
+		context.put("smart", 1);
+		Assert.assertTrue(script.execute(context));
+		System.out.println(Script.compile("'abc' > '[a-c]{3}'").execute(null));
 	}
-	@Test()
+//	@Test()
     public void testApp()
     {
     	Map<String,Object> map = new HashMap<String,Object>();
@@ -47,5 +56,6 @@ public class AppTest{
 			}
     	});
     	machine.current().getAction().sport();
+    	machine.current().getAction().toString();
     }
 }

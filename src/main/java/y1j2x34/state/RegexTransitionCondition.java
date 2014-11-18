@@ -1,14 +1,14 @@
 package y1j2x34.state;
 
-public class RegexGuards extends DefaultGuards{
+public class RegexTransitionCondition extends DefaultTransitionCondition{
 
 	private static final long serialVersionUID = 1L;
-	public RegexGuards(Object value) {
+	public RegexTransitionCondition(Object value) {
 		super(value);
 	}
 	
 	@Override
-	public boolean test(Object o) {
+	public boolean accept(Object o) {
 		if(o == null) return false;
 		String regex = String.valueOf(getValue());
 		String other = String.valueOf(o);

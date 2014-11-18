@@ -78,3 +78,4 @@ final class StateActionProxyFactory{
 		return (TargetAction)proxy;
 	}
 }
+

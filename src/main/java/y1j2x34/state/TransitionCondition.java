@@ -2,11 +2,11 @@ package y1j2x34.state;
 
 import java.io.Serializable;
 /**
- * 检测器
+ * 转换条件
  * @author y1j2x34
  */
-public interface Guards extends Serializable{
-	public boolean test(Object o);
+public interface TransitionCondition extends Serializable{
+	public boolean accept(Object o);
 	public Object getValue();
 	public void setValue(Object value);
 }

@@ -23,10 +23,10 @@ class ValueScriptMatcherImpl implements ValueScriptMatcher{
 		}
 	}
 	private boolean equals0(Object value){
-		return value != null && value.equals(value);
+		return value == this.value || value != null && value.equals(this.value);
 	}
 	private boolean like0(String code){
-		return match0(code.replaceAll("_", ".").replaceAll("\\%", ".*").replaceAll("\\[\\!", "[^"));
+		return match0(code.replace('_', '.').replaceAll("\\%", ".*").replaceAll("\\[\\!", "[^"));
 	}
 	private boolean checkStr(String str){
 		return value == null || String.class != value.getClass() || str == null || str.isEmpty();
@@ -36,19 +36,33 @@ class ValueScriptMatcherImpl implements ValueScriptMatcher{
 	}
 	@Override
 	public LogicScriptMatcher is(Object value) {
+		if(value instanceof Element){
+			return is((Element)value);
+		}
 		return new LogicScriptMatcherImpl(transform(equals0(value)),value);
 	}
-	@Override
-	public LogicScriptMatcher isNumeric() {
-		return new LogicScriptMatcherImpl(transform(match0("\\d+(\\.\\d+)?")), leftValue);
+	
+	public LogicScriptMatcher is(Element elm) {
+		return new LogicScriptMatcherImpl(transform(elm.check(value)),value);
 	}
-	@Override
-	public LogicScriptMatcher isNotNumeric() {
-		return new LogicScriptMatcherImpl(transform(!match0("\\d+(\\.\\d+)?")), leftValue);
-	}
+	//	@Override
+//	public LogicScriptMatcher isNumeric() {
+//		return new LogicScriptMatcherImpl(transform(value instanceof Number || match0("\\d+(\\.\\d+)?")), leftValue);
+//	}
+//	@Override
+//	public LogicScriptMatcher isNotNumeric() {
+//		return new LogicScriptMatcherImpl(transform(!(value instanceof Number) && !match0("\\d+(\\.\\d+)?")), leftValue);
+//	}
 	@Override
 	public LogicScriptMatcher isNot(Object value) {
+		if(value instanceof Element){
+			return isNot((Element)value);
+		}
 		return new LogicScriptMatcherImpl(transform(!equals0(value)),value);
+	}
+	
+	public LogicScriptMatcher isNot(Element elm) {
+		return new LogicScriptMatcherImpl(transform(!elm.check(value)),value);
 	}
 	@Override
 	public LogicScriptMatcher like(String code) {
@@ -65,13 +79,5 @@ class ValueScriptMatcherImpl implements ValueScriptMatcher{
 	@Override
 	public LogicScriptMatcher notMatch(String regex) {
 		return new LogicScriptMatcherImpl(transform(!match0(regex)),value);
-	}
-	@Override
-	public LogicScriptMatcher isNull() {
-		return new LogicScriptMatcherImpl(transform(value == null),value);
-	}
-	@Override
-	public LogicScriptMatcher isNotNull() {
-		return new LogicScriptMatcherImpl(transform(value != null),value);
 	}
 }

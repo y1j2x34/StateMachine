@@ -9,9 +9,9 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
+ * finite-state-machine
  * 有限状态机
  * @author y1j2x34
- *
  * @param <Action> 状态机事件
  */
 public class StateMachine<Action> implements Serializable,StateListener<Action>{
@@ -38,41 +38,45 @@ public class StateMachine<Action> implements Serializable,StateListener<Action>{
 	/**
 	 * 构建状态变化事件
 	 * @param from		开始状态
-	 * @param guard	use {@link DefaultGuards} 变化条件
+	 * @param condition	use {@link DefaultTransitionCondition} 变化条件
 	 * @param to		目标状态
 	 */
-	public StateMachine<Action> link(State<Action> from,Object guard,State<Action> to){
-		from.link(guard, to);
+	public StateMachine<Action> link(State<Action> from,Object condition,State<Action> to){
+		from.link(condition, to);
 		return this;
 	}
-	public StateMachine<Action> link(State<Action> from,Guards guard,State<Action> to){
-		from.link(guard, to);
+	public StateMachine<Action> link(State<Action> from,TransitionCondition condition,State<Action> to){
+		from.link(condition, to);
 		return this;
 	}
 	
 	/**
 	 * 根据条件变化状态
-	 * @param guard 条件值
-	 * @throws StateException 狀態不能變化時拋出該異常
+	 * @param condition 条件值
+	 * @throws StateException 状态无法切换时抛出
 	 * @return 新的状态
 	 */
-	public State<Action> transition(Object guard) throws StateException{
+	public State<Action> transition(Object condition) throws StateException{
 		State<Action> old = mCurrent;
-		State<Action> new_ = mCurrent.transition(guard);
+		State<Action> new_ = mCurrent.transition(condition);
 		if(new_ != null){
 			mCurrent = new_;
 			mPreview = old;
 			//状态发生了变化，触发变化后的事件
 			if(mListener != null){
-				mListener.onAfterState(this, mCurrent, old, guard);
+				mListener.onAfterState(this, mCurrent, old, condition);
 			}
 		}else{
 			//状态无法改变
-			mListener.onErrorChange(this, old, guard);
-			throw new StateException("can't change state by condition:"+guard);
+			mListener.onErrorChange(this, old, condition);
+			throw new StateException("状态无法切换。");
 		}
 		return mCurrent;
 	}
+	/**
+	 * 返回上一个状态，这里不会触发状态变化事件
+	 * @return
+	 */
 	public State<Action> gotoPreviewState(){
 		State<Action> old = mCurrent;
 		mCurrent = mPreview;
@@ -91,21 +95,35 @@ public class StateMachine<Action> implements Serializable,StateListener<Action>{
 	State<Action> getInitialState(){
 		return mInitial;
 	}
+	/**
+	 * 判断当前状态
+	 * @param state
+	 * @return
+	 */
 	public boolean is(State<Action> state){
 		return current() == state;
 	}
 	/**
-	 * 事件是否能在当前触发
+	 * 判断当前状态是否存在某个条件能够转换到另外一个状态
 	 * @param state
 	 * @return
 	 */
 	public boolean can(State<Action> state){
 		return current().can(state);
 	}
+	/**
+	 * @see #can(State)
+	 * @param state
+	 * @return
+	 */
 	public boolean cannot(State<Action> state){
 		return !can(state);
 	}
-	
+	/**
+	 * 创建状态
+	 * @param act
+	 * @return
+	 */
 	public State<Action> newState(Action act){
 		return newState(act, STATE_NAME_PREFIX+mStateCount);
 	}
