@@ -9,7 +9,7 @@ public class DefaultTransitionCondition implements TransitionCondition{
 		this.value = value;
 	}
 	
-	public boolean accept(Object o){
+	public boolean can(Object o){
 		return o==value || (value != null && value.equals(o));
 	}
 	

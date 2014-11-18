@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @author y1j2x34
  */
 public interface TransitionCondition extends Serializable{
-	public boolean accept(Object o);
+	public boolean can(Object o);
 	public Object getValue();
 	public void setValue(Object value);
 }

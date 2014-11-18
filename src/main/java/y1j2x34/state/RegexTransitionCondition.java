@@ -8,7 +8,7 @@ public class RegexTransitionCondition extends DefaultTransitionCondition{
 	}
 	
 	@Override
-	public boolean accept(Object o) {
+	public boolean can(Object o) {
 		if(o == null) return false;
 		String regex = String.valueOf(getValue());
 		String other = String.valueOf(o);

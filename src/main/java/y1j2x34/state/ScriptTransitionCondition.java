@@ -20,7 +20,7 @@ public class ScriptTransitionCondition extends DefaultTransitionCondition{
 	}
 	
 	@Override
-	public boolean accept(Object o) {
+	public boolean can(Object o) {
 		Context ctx = new Context();
 		ctx.putAll(o);
 		ctx.putAll(context);
