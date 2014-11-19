@@ -30,36 +30,36 @@ public class State<Action> implements Serializable{
 	}
 	/**
 	 * 与其他状态建立单向条件连接
-	 * @param guard
+	 * @param cond
 	 * @param state
 	 * @return self
 	 */
-	public State<Action> link(Object guard,State<Action> state){
-		return this.link(new DefaultTransitionCondition(guard), state);
+	public State<Action> link(Object cond,State<Action> state){
+		return this.link(new DefaultTransitionCondition(cond), state);
 	}
-	public State<Action> link(TransitionCondition guard,State<Action> state){
-		links.add(new LinkData(guard, state));
+	public State<Action> link(TransitionCondition cond,State<Action> state){
+		links.add(new LinkData(cond, state));
 		return this;
 	}
 	/**
 	 * 与自身建立条件连接
-	 * @param guard
+	 * @param cond
 	 * @return this
 	 */
-	public final State<Action> round(Object guard){
-		return link(guard,this);
+	public final State<Action> round(Object cond){
+		return link(cond,this);
 	}
-	final State<Action> transition(Object guard){
+	final State<Action> transition(Object cond){
 		StateListener<Action> listener = mMachine.getStateListener();
-		State<Action> st = findNext(guard);
+		State<Action> st = findNext(cond);
 		if(st != null && listener != null){
-			listener.onBeforeState(mMachine, st, this, guard);
+			listener.onBeforeState(mMachine, st, this, cond);
 		}
 		return st;
 	}
-	private State<Action> findNext(Object guard){
+	private State<Action> findNext(Object cond){
 		for(LinkData link:links){
-			if(link.cond.can(guard)){
+			if(link.cond.can(cond)){
 				return link.state;
 			}
 		}
